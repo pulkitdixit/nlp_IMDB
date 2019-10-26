@@ -46,9 +46,9 @@ for line in lines:
     line = np.asarray(line,dtype=np.int)
 
     line[line>vocab_size] = 0
-    line = line[line!=0]
+    #line = line[line!=0]
 
-    line = np.mean(glove_embeddings[line],axis=0)
+    #line = np.mean(glove_embeddings[line],axis=0)
 
     x_train.append(line)
 x_train = np.asarray(x_train)
@@ -65,9 +65,9 @@ for line in lines:
     line = np.asarray(line,dtype=np.int)
 
     line[line>vocab_size] = 0
-    line = line[line!=0]
+    #line = line[line!=0]
     
-    line = np.mean(glove_embeddings[line],axis=0)
+    #line = np.mean(glove_embeddings[line],axis=0)
 
     x_test.append(line)
 x_test = np.asarray(x_test)
@@ -103,6 +103,7 @@ model.train()
 train_loss = []
 train_accu = []
 test_accu = []
+seq_len = [50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
 
 #------------------------------------------------------------------------------
 
@@ -124,7 +125,7 @@ for epoch in range(no_of_epochs):
     for i in range(0, L_Y_test, batch_size):
 
         x_input2 = [x_test[j] for j in I_permutation[i:i+batch_size]]
-        sequence_length = 100
+        sequence_length = seq_len[epoch]
         x_input = np.zeros((batch_size,sequence_length),dtype=np.int)
         for j in range(batch_size):
             x = np.asarray(x_input2[j])
@@ -157,7 +158,7 @@ for epoch in range(no_of_epochs):
     time2 = time.time()
     time_elapsed = time2 - time1
 
-    print("  ", "%.2f" % (epoch_acc*100.0), "%.4f" % epoch_loss)
+    print("  ", "Sequence Length: ", sequence_length, "Accuracy: " "%.2f" % (epoch_acc*100.0), "Loss: ", "%.4f" % epoch_loss)
 
 torch.save(model,'rnn.model')
 data = [train_loss,train_accu,test_accu]
